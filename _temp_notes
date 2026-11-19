@@ -18,3 +18,12 @@ password: postgres
 npx knex migrate:latest      # oczekiwane: Batch 1 run: 1 migrations
 npx knex migrate:rollback    # oczekiwane: Batch 1 rolled back: 1 migrations
 npx knex migrate:latest      # ponownie, żeby potwierdzić, że down działa
+
+
+
+docker start restomenago-db
+npx knex seed:make 01_initial_data
+
+npx knex seed:run
+npx knex seed:run
+docker exec -it restomenago-db psql -U postgres -d restomenago -c "SELECT id, number, seats FROM tables" #sprawdzenie czy dzuaka
