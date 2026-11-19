@@ -11,3 +11,10 @@ postgres:16                     obraz z konkretną wersją, nigdy latest
 
 
 password: postgres
+
+
+
+
+npx knex migrate:latest      # oczekiwane: Batch 1 run: 1 migrations
+npx knex migrate:rollback    # oczekiwane: Batch 1 rolled back: 1 migrations
+npx knex migrate:latest      # ponownie, żeby potwierdzić, że down działa
