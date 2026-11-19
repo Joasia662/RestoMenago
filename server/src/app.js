@@ -3,14 +3,15 @@ const requestLogger = require("./middleware/requestLogger");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
 
-function createApp() {
+function createApp({ db }) {
     const app = express();
 
     app.use(requestLogger);
     app.use(express.json());
 
-    app.get("/api/health", (req, res) => {
-        res.json({ status: "ok" });
+    app.get("/api/health", async (req, res) => {
+        await db.raw("SELECT 1");
+        res.json({ status: "ok", database: "up" });
     });
 
     // temporary - shows how an unexpected error is handled (500)

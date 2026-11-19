@@ -1,0 +1,13 @@
+docker run --name restomenago-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=restomenago -p 5432:5432 -v restomenago-pgdata:/var/lib/postgresql/data -d postgres:16
+
+docker exec -it restomenago-db psql -U postgres -d restomenago
+
+--name restomenago-db           nazwa kontenera, żeby łatwo go zatrzymać i uruchomić
+-e POSTGRES_...                 użytkownik, hasło i nazwa bazy tworzone przy pierwszym starcie
+-p 5432:5432                    port komputera 5432 prowadzi do portu 5432 w kontenerze
+-v restomenago-pgdata:...       nazwany volume: dane przetrwają usunięcie kontenera
+-d                              uruchomienie w tle
+postgres:16                     obraz z konkretną wersją, nigdy latest
+
+
+password: postgres
