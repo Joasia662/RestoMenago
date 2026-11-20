@@ -19,13 +19,13 @@ exports.seed = async function (knex) {
   ]);
 
   await knex("menu_items").insert([
-    { name: "Tomato soup", category: "SOUP", price: 14.0 },
+    { name: "Zupa pomidorowa", category: "SOUP", price: 14.0 },
     { name: "Pierogi ruskie", category: "MAIN", price: 28.0 },
-    { name: "Pork chop with potatoes", category: "MAIN", price: 36.5 },
-    { name: "Caesar salad", category: "MAIN", price: 31.0 },
-    { name: "Cheesecake", category: "DESSERT", price: 17.0 },
-    { name: "Lemonade", category: "DRINK", price: 12.0 },
-    { name: "Seasonal special", category: "MAIN", price: 42.0, is_available: false }
+    { name: "Schabowy", category: "MAIN", price: 36.5 },
+    { name: "Sałatka cezar", category: "MAIN", price: 31.0 },
+    { name: "Sernik", category: "DESSERT", price: 17.0 },
+    { name: "Lemoniada", category: "DRINK", price: 12.0 },
+    { name: "Zupa dnia", category: "MAIN", price: 42.0, is_available: false }
   ]);
 
   await knex("orders").insert([
@@ -35,7 +35,7 @@ exports.seed = async function (knex) {
 
   await knex("order_items").insert([
     { order_id: 1, menu_item_id: 1, quantity: 2, unit_price: 14.0 },
-    { order_id: 1, menu_item_id: 2, quantity: 1, unit_price: 28.0, note: "no onion" },
+    { order_id: 1, menu_item_id: 2, quantity: 1, unit_price: 28.0, note: "Bez cebuli" },
     { order_id: 2, menu_item_id: 5, quantity: 2, unit_price: 17.0 }
   ]);
 };
