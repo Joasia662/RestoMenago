@@ -3,7 +3,12 @@ const requestLogger = require("./middleware/requestLogger");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
 
-function createApp({ db }) {
+// Table module
+const { createTablesService } = require("./modules/tables/tables.service");
+const { createTablesController } = require("./modules/tables/tables.controller");
+const { createTablesRouter } = require("./modules/tables/tables.routes");
+
+function createApp({ db, repositories, runInTransaction }) {
     const app = express();
 
     app.use(requestLogger);
@@ -15,9 +20,15 @@ function createApp({ db }) {
     });
 
     // temporary - shows how an unexpected error is handled (500)
-    app.get("/api/debug/crash", () => {
-        throw new Error("boom");
+    //app.get("/api/debug/crash", () => {
+    //    throw new Error("boom");
+    //});
+
+    const tablesService = createTablesService({
+        tablesRepository: repositories.tables,
+        ordersRepository: repositories.orders
     });
+    app.use("/api/tables", createTablesRouter(createTablesController(tablesService)));
 
     app.use(notFound);
     app.use(errorHandler);

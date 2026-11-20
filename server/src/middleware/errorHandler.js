@@ -22,6 +22,28 @@ function errorHandler(err, req, res, next) {
         });
     }
 
+    // PostgreSQL: unique constraint violated (e.g. two requests at the same moment)
+    if (err.code === "23505") {
+        return res.status(409).json({
+            error: {
+                code: "UNIQUE_VIOLATION",
+                message: "Resource already exists",
+                requestId: req.id
+            }
+        });
+    }
+
+    // PostgreSQL: row is still referenced by another table
+    if (err.code === "23503") {
+        return res.status(409).json({
+            error: {
+                code: "RESOURCE_IN_USE",
+                message: "Resource is used by other records",
+                requestId: req.id
+            }
+        });
+    }
+
     console.error(`[${req.id}]`, err);
 
     res.status(500).json({
