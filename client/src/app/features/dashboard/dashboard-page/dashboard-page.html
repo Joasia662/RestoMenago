@@ -13,14 +13,19 @@
     />
   </section>
 
-  @if (selectedTable(); as table) {
-    <aside class="panel">
+  <aside class="panel">
+    @if (selectedTable(); as table) {
       <app-order-panel
         [table]="table"
         [orderId]="activeOrders()[table.id]?.id ?? null"
         (changed)="load()"
         (closed)="selectedTableId.set(null)"
       />
-    </aside>
-  }
+    } @else {
+      <div class="placeholder">
+        <h2>Zamówienie</h2>
+        <p>Kliknij stolik, żeby otworzyć albo obsłużyć zamówienie.</p>
+      </div>
+    }
+  </aside>
 </div>

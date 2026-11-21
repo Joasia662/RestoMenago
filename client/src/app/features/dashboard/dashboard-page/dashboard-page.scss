@@ -11,4 +11,30 @@
 .panel {
   width: 380px;
   flex-shrink: 0;
+  position: sticky;
+  top: 24px;
+}
+
+.placeholder {
+  background: var(--card);
+  border-radius: 8px;
+  padding: 22px;
+  min-height: 500px;
+  color: var(--muted);
+
+  h2 {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+}
+
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .panel {
+    width: 100%;
+    position: static;
+  }
 }
