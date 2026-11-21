@@ -1,11 +1,17 @@
 .add-tile {
   width: 100%;
   aspect-ratio: 4 / 3;
-  border: 4px dashed #9aa8ad;
-  border-radius: 28px;
+  border: 3px dashed rgba(255, 255, 255, 0.35);
+  border-radius: 24px;
   background: transparent;
-  color: #5b6b72;
-  font-size: 18px;
+  color: var(--muted);
+  font-size: 17px;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.03);
+    color: var(--text);
+  }
 }
 
 .form {
@@ -15,6 +21,12 @@
   gap: 8px;
   padding: 16px;
   font-size: 14px;
+  background: var(--card);
+  border-style: solid;
+
+  &:hover {
+    transform: none;
+  }
 }
 
 .row {

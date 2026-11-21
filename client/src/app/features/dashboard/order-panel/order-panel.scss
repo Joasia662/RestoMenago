@@ -1,8 +1,8 @@
 .panel {
-  background: #fff;
-  border: 3px solid #1d2b33;
+  background: var(--card);
+  color: var(--text);
   border-radius: 8px;
-  padding: 20px;
+  padding: 22px;
   min-height: 500px;
   display: flex;
   flex-direction: column;
@@ -21,14 +21,14 @@ h2 {
 
 .meta {
   margin: 4px 0 0;
-  color: #5b6b72;
+  color: var(--muted);
   font-size: 13px;
 }
 
 .close {
   background: none;
-  color: #c0392b;
-  border: 2px solid #c0392b;
+  color: var(--danger);
+  border: 2px solid var(--danger);
   padding: 2px 9px;
 }
 
@@ -45,8 +45,9 @@ h2 {
     align-items: center;
     gap: 10px;
     padding: 10px 12px;
-    border: 2px solid #b9a3d6;
-    border-radius: 4px;
+    background: var(--card-soft);
+    border-left: 4px solid var(--accent);
+    border-radius: 0;
 
     div {
       flex: 1;
@@ -54,26 +55,36 @@ h2 {
       flex-direction: column;
     }
 
+    strong {
+      font-weight: 500;
+    }
+
     small {
-      color: #5b6b72;
+      color: var(--muted);
     }
   }
 
   .empty {
-    border-style: dashed;
-    color: #5b6b72;
+    border-left-style: dashed;
+    color: var(--muted);
   }
 }
 
 .remove {
   background: none;
-  color: #c0392b;
+  color: var(--danger);
   padding: 2px 6px;
 }
 
 .total {
   text-align: right;
   margin: 0;
+  color: var(--muted);
+
+  strong {
+    color: var(--text);
+    font-weight: 500;
+  }
 }
 
 .actions {
@@ -84,9 +95,13 @@ h2 {
 
   button {
     flex: 1;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 13px;
+    padding: 10px;
   }
 
   .pay {
-    background: #27ae60;
+    background: #2e9d63;
   }
 }

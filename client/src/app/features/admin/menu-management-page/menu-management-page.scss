@@ -1,5 +1,10 @@
+h1 {
+  margin-top: 0;
+}
+
 .add {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 16px;
 }
@@ -7,16 +12,26 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--card);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th,
 td {
   text-align: left;
-  padding: 10px 12px;
-  border-bottom: 1px solid #e3e8ea;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+th {
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .unavailable td {
-  color: #9aa8ad;
+  color: var(--muted);
 }

@@ -5,6 +5,13 @@
   [class.selected]="selected()"
   (click)="picked.emit()"
 >
+  <svg class="icon" viewBox="0 0 64 40" aria-hidden="true">
+    <rect x="12" y="10" width="40" height="8" rx="3" />
+    <rect x="17" y="18" width="4" height="16" rx="1.5" />
+    <rect x="43" y="18" width="4" height="16" rx="1.5" />
+    <rect x="2" y="16" width="7" height="14" rx="2" opacity="0.6" />
+    <rect x="55" y="16" width="7" height="14" rx="2" opacity="0.6" />
+  </svg>
   <span class="number">{{ table().number }}</span>
   <span class="seats">{{ table().seats }} miejsca</span>
   <span class="status">{{ label() }}</span>

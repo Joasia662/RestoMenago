@@ -1,12 +1,33 @@
+// one palette for the whole app, taken from the login page
+:root {
+  --bg-start: #16343a;
+  --bg-end: #2f6f7a;
+  --card: #102226;
+  --card-soft: #1a3338;
+  --field: #d9dee0;
+  --accent: #4a7f88;
+  --text: #ffffff;
+  --muted: #a9bec2;
+  --danger: #e5675b;
+  --good: #3fbf7f;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  background: #f3f5f6;
-  color: #1d2b33;
+  min-height: 100vh;
+  font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, var(--bg-start), var(--bg-end)) fixed;
+  color: var(--text);
+}
+
+h1,
+h2 {
+  font-weight: 300;
+  letter-spacing: 1px;
 }
 
 button {
@@ -15,18 +36,23 @@ button {
   border: none;
   border-radius: 6px;
   padding: 8px 14px;
-  background: #2f6f7a;
-  color: #fff;
+  background: var(--accent);
+  color: var(--text);
+  transition: filter 0.15s;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.12);
+  }
 }
 
 button:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
 button.secondary {
-  background: #e3e8ea;
-  color: #1d2b33;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
 }
 
 button.danger {
@@ -37,11 +63,13 @@ input,
 select {
   font: inherit;
   padding: 8px 10px;
-  border: 1px solid #c9d2d6;
+  border: none;
   border-radius: 6px;
+  background: var(--field);
+  color: #102226;
 }
 
 .error {
-  color: #c0392b;
+  color: #ff8a80;
   margin: 8px 0;
 }
