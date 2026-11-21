@@ -15,7 +15,11 @@ function createOrdersController(ordersService) {
         },
 
         async create(req, res) {
-            const order = await ordersService.createOrder(req.validated.body);
+            // waiterId comes from the token, not from the request body
+            const order = await ordersService.createOrder({
+                ...req.validated.body,
+                waiterId: req.user.id
+            });
             res.status(201).location(`/api/orders/${order.id}`).json(toOrderResponse(order));
         },
 

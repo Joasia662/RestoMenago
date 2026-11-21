@@ -27,3 +27,6 @@ npx knex seed:make 01_initial_data
 npx knex seed:run
 npx knex seed:run
 docker exec -it restomenago-db psql -U postgres -d restomenago -c "SELECT id, number, seats FROM tables" #sprawdzenie czy dzuaka
+
+npm install bcryptjs jsonwebtoken
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"

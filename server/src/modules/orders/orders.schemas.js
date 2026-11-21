@@ -15,7 +15,6 @@ const orderItemBody = z.strictObject({
 
 const createOrderBody = z.strictObject({
     tableId: positiveInt,
-    waiterId: positiveInt, // temporary - after login is added it comes from the token
     items: z.array(orderItemBody).max(50).default([])
 });
 

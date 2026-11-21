@@ -11,8 +11,13 @@ function toUser(row) {
 function createUsersRepository(db) {
     return {
         async findById(id) {
-            const row = await db("users").where({ id }).first(); 
-            return row ? toUser(row) : null; //Service zamówień sprawdza nim, czy kelner o podanym ID istnieje
+            const row = await db("users").where({ id }).first();
+            return row ? toUser(row) : null;
+        },
+
+        async findByUsername(username) {
+            const row = await db("users").where({ username }).first();
+            return row ? toUser(row) : null;
         }
     };
 }

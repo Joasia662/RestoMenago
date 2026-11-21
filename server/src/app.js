@@ -2,6 +2,12 @@ const express = require("express");
 const requestLogger = require("./middleware/requestLogger");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
+const { createAuthenticate } = require("./middleware/authenticate");
+
+// Auth module
+const { createAuthService } = require("./modules/auth/auth.service");
+const { createAuthController } = require("./modules/auth/auth.controller");
+const { createAuthRouter } = require("./modules/auth/auth.routes");
 
 // Table module
 const { createTablesService } = require("./modules/tables/tables.service");
@@ -18,7 +24,7 @@ const { createOrdersService } = require("./modules/orders/orders.service");
 const { createOrdersController } = require("./modules/orders/orders.controller");
 const { createOrdersRouter } = require("./modules/orders/orders.routes");
 
-function createApp({ db, repositories, runInTransaction }) {
+function createApp({ db, repositories, runInTransaction, config }) {
     const app = express();
 
     app.use(requestLogger);
@@ -29,16 +35,20 @@ function createApp({ db, repositories, runInTransaction }) {
         res.json({ status: "ok", database: "up" });
     });
 
-    // temporary - shows how an unexpected error is handled (500)
-    //app.get("/api/debug/crash", () => {
-    //    throw new Error("boom");
-    //});
+    const authenticate = createAuthenticate(config.jwtSecret);
+
+    const authService = createAuthService({
+        usersRepository: repositories.users,
+        jwtSecret: config.jwtSecret,
+        jwtExpiresIn: config.jwtExpiresIn
+    });
+    app.use("/api/auth", createAuthRouter(createAuthController(authService), authenticate));
 
     const tablesService = createTablesService({
         tablesRepository: repositories.tables,
         ordersRepository: repositories.orders
     });
-    app.use("/api/tables", createTablesRouter(createTablesController(tablesService)));
+    app.use("/api/tables", authenticate, createTablesRouter(createTablesController(tablesService)));
 
     const menuItemsService = createMenuItemsService({
         menuItemsRepository: repositories.menuItems,
@@ -46,11 +56,12 @@ function createApp({ db, repositories, runInTransaction }) {
     });
     app.use(
         "/api/menu-items",
+        authenticate,
         createMenuItemsRouter(createMenuItemsController(menuItemsService))
     );
 
     const ordersService = createOrdersService({ repositories, runInTransaction });
-    app.use("/api/orders", createOrdersRouter(createOrdersController(ordersService)));
+    app.use("/api/orders", authenticate, createOrdersRouter(createOrdersController(ordersService)));
 
     app.use(notFound);
     app.use(errorHandler);

@@ -1,13 +1,16 @@
+
+const bcrypt = require("bcryptjs");
+
 exports.seed = async function (knex) {
   await knex.raw(
     "TRUNCATE order_items, orders, menu_items, tables, users RESTART IDENTITY CASCADE"
   );
 
-  // password_hash is a placeholder - real hashes are added together with login
+
   await knex("users").insert([
-    { username: "manager", password_hash: "not-set", role: "ADMIN" },
-    { username: "anna", password_hash: "not-set", role: "WAITER" },
-    { username: "piotr", password_hash: "not-set", role: "WAITER" }
+    { username: "manager", password_hash: bcrypt.hashSync("manager123", 10), role: "ADMIN" },
+    { username: "anna", password_hash: bcrypt.hashSync("anna123", 10), role: "WAITER" },
+    { username: "piotr", password_hash: bcrypt.hashSync("piotr123", 10), role: "WAITER" }
   ]);
 
   await knex("tables").insert([
