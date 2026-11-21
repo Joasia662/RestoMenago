@@ -7,7 +7,7 @@ const FIXED_NOW = new Date("2026-11-21T12:00:00Z");
 
 // fake repositories instead of a database: the service only needs these methods
 function createFakes({ order = null, activeOrder = null, menuItem = null, itemsCount = 1 } = {}) {
-    const calls = { createdOrders: [], addedItems: [], statusUpdates: [] };
+    const calls = { createdOrders: [], addedItems: [], statusUpdates: [], events: [] };
 
     const repos = {
         tables: { findById: async id => ({ id, number: id, seats: 4 }) },
@@ -34,7 +34,8 @@ function createFakes({ order = null, activeOrder = null, menuItem = null, itemsC
     const service = createOrdersService({
         repositories: repos,
         runInTransaction: fn => fn(repos), // no real transaction in unit tests
-        now: () => FIXED_NOW
+        now: () => FIXED_NOW,
+        events: { emit: (name, payload) => calls.events.push({ name, ...payload }) }
     });
 
     return { service, calls };
@@ -110,5 +111,18 @@ describe("orders.service", () => {
             service.addItem(5, { menuItemId: 1, quantity: 1 }),
             err => err.code === "ORDER_NOT_EDITABLE"
         );
+    });
+
+    test("emits order.statusChanged only when the status really changes", async () => {
+        const { service, calls } = createFakes({ order: { id: 5, status: "SERVED" } });
+        await service.changeStatus(5, "PAID");
+        assert.equal(calls.events.length, 1);
+        assert.equal(calls.events[0].name, "order.statusChanged");
+        assert.equal(calls.events[0].from, "SERVED");
+        assert.equal(calls.events[0].to, "PAID");
+
+        const same = createFakes({ order: { id: 5, status: "PAID" } });
+        await same.service.changeStatus(5, "PAID"); // repeating the same status is a no-op
+        assert.equal(same.calls.events.length, 0);
     });
 });

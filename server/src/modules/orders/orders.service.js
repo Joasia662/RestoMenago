@@ -12,7 +12,13 @@ const ALLOWED_TRANSITIONS = {
 const EDITABLE_STATUSES = ["OPEN", "IN_PREPARATION"];
 const CLOSED_STATUSES = ["PAID", "CANCELLED"];
 
-function createOrdersService({ repositories, runInTransaction, now = () => new Date() }) {
+// events: application event bus; the default does nothing (used by unit tests)
+function createOrdersService({
+    repositories,
+    runInTransaction,
+    now = () => new Date(),
+    events = { emit() {} }
+}) {
     async function getOrder(id) {
         const order = await repositories.orders.findDetailsById(id);
         if (!order) throw new NotFoundError("Order");
@@ -82,7 +88,9 @@ function createOrdersService({ repositories, runInTransaction, now = () => new D
                 return order.id;
             });
 
-            return getOrder(orderId);
+            const order = await getOrder(orderId);
+            events.emit("order.created", { order }); // after commit
+            return order;
         },
 
         async addItem(orderId, item) {
@@ -124,6 +132,8 @@ function createOrdersService({ repositories, runInTransaction, now = () => new D
         },
 
         async changeStatus(orderId, newStatus) {
+            let previousStatus = null;
+
             await runInTransaction(async repos => {
                 const order = await repos.orders.findById(orderId, { forUpdate: true });
                 if (!order) throw new NotFoundError("Order");
@@ -145,6 +155,7 @@ function createOrdersService({ repositories, runInTransaction, now = () => new D
                     }
                 }
 
+                previousStatus = order.status;
                 const timestamp = now();
                 await repos.orders.updateStatus(orderId, {
                     status: newStatus,
@@ -153,7 +164,12 @@ function createOrdersService({ repositories, runInTransaction, now = () => new D
                 });
             });
 
-            return getOrder(orderId);
+            const order = await getOrder(orderId);
+            if (previousStatus) {
+                // only when the status really changed (repeating the same status is a no-op)
+                events.emit("order.statusChanged", { order, from: previousStatus, to: newStatus });
+            }
+            return order;
         }
     };
 }
