@@ -1,0 +1,16 @@
+<div class="page">
+  <h1>Logowanie</h1>
+
+  <form class="card" (ngSubmit)="submit()">
+    <input name="username" placeholder="Login" [(ngModel)]="username" autocomplete="username" required />
+    <input name="password" type="password" placeholder="Hasło" [(ngModel)]="password" autocomplete="current-password" required />
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <button type="submit" [disabled]="loading() || !username || !password">
+      {{ loading() ? 'Logowanie...' : 'Zaloguj' }}
+    </button>
+  </form>
+</div>

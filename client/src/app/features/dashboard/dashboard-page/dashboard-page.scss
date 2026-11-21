@@ -1,0 +1,14 @@
+.layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.tables {
+  flex: 1;
+}
+
+.panel {
+  width: 380px;
+  flex-shrink: 0;
+}

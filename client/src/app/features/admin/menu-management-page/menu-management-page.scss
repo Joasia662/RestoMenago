@@ -1,0 +1,22 @@
+.add {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e3e8ea;
+}
+
+.unavailable td {
+  color: #9aa8ad;
+}

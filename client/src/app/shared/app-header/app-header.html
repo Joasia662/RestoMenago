@@ -1,0 +1,15 @@
+<header>
+  <a routerLink="/" class="logo">RestoMenago</a>
+
+  <nav>
+    <a routerLink="/">Sala</a>
+    @if (auth.isAdmin()) {
+      <a routerLink="/admin/menu">Menu</a>
+    }
+  </nav>
+
+  <div class="user">
+    <span>{{ auth.user()?.username }} ({{ auth.user()?.role === 'ADMIN' ? 'manager' : 'kelner' }})</span>
+    <button class="secondary" (click)="auth.logout()">Wyloguj</button>
+  </div>
+</header>

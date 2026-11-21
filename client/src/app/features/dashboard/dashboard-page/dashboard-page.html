@@ -1,0 +1,26 @@
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+<div class="layout">
+  <section class="tables">
+    <app-table-grid
+      [tables]="tables()"
+      [activeOrders]="activeOrders()"
+      [selectedId]="selectedTableId()"
+      (selected)="selectedTableId.set($event)"
+      (changed)="load()"
+    />
+  </section>
+
+  @if (selectedTable(); as table) {
+    <aside class="panel">
+      <app-order-panel
+        [table]="table"
+        [orderId]="activeOrders()[table.id]?.id ?? null"
+        (changed)="load()"
+        (closed)="selectedTableId.set(null)"
+      />
+    </aside>
+  }
+</div>

@@ -1,0 +1,27 @@
+.add-tile {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 4px dashed #9aa8ad;
+  border-radius: 28px;
+  background: transparent;
+  color: #5b6b72;
+  font-size: 18px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+
+  button {
+    flex: 1;
+  }
+}

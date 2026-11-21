@@ -1,0 +1,11 @@
+<form class="picker" (ngSubmit)="submit()">
+  <select name="menuItemId" [(ngModel)]="menuItemId" required>
+    <option [ngValue]="null" disabled>Wybierz danie...</option>
+    @for (item of menu(); track item.id) {
+      <option [ngValue]="item.id">{{ item.name }} ({{ item.price.toFixed(2) }} zł)</option>
+    }
+  </select>
+  <input name="quantity" type="number" min="1" max="50" [(ngModel)]="quantity" />
+  <input name="note" placeholder="Notatka (opcjonalnie)" [(ngModel)]="note" />
+  <button type="submit" [disabled]="disabled() || !menuItemId || quantity < 1">Dodaj</button>
+</form>

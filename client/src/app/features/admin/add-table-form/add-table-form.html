@@ -1,0 +1,15 @@
+@if (!open()) {
+  <button type="button" class="add-tile" (click)="open.set(true)">+ Dodaj stolik</button>
+} @else {
+  <form class="add-tile form" (ngSubmit)="submit()">
+    <input name="number" type="number" min="1" placeholder="Numer" [(ngModel)]="number" required />
+    <input name="seats" type="number" min="1" max="20" placeholder="Miejsca" [(ngModel)]="seats" required />
+    @if (error()) {
+      <small class="error">{{ error() }}</small>
+    }
+    <div class="row">
+      <button type="submit" [disabled]="!number">Dodaj</button>
+      <button type="button" class="secondary" (click)="open.set(false)">Anuluj</button>
+    </div>
+  </form>
+}

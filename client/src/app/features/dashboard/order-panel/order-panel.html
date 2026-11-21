@@ -1,0 +1,60 @@
+<div class="panel">
+  <div class="header">
+    <div>
+      <h2>Stolik {{ table().number }}</h2>
+      @if (order(); as o) {
+        <p class="meta">Zamówienie #{{ o.id }} · {{ statusLabel() }} · kelner: {{ o.waiter.username }}</p>
+      }
+    </div>
+    <button class="close" title="Zamknij" (click)="closed.emit()">✕</button>
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (order(); as o) {
+    <ul class="items">
+      @for (item of o.items; track item.id) {
+        <li>
+          <div>
+            <strong>{{ item.name }} x{{ item.quantity }}</strong>
+            @if (item.note) {
+              <small>notatka: {{ item.note }}</small>
+            }
+          </div>
+          <span>{{ item.lineTotal.toFixed(2) }} zł</span>
+          @if (editable()) {
+            <button class="remove" title="Usuń pozycję" [disabled]="busy()" (click)="removeItem(item.id)">✕</button>
+          }
+        </li>
+      } @empty {
+        <li class="empty">Brak pozycji. Dodaj danie poniżej.</li>
+      }
+    </ul>
+
+    <p class="total">Razem: <strong>{{ o.total.toFixed(2) }} zł</strong></p>
+
+    @if (editable()) {
+      <app-menu-picker [disabled]="busy()" (add)="addItem($event)" />
+    }
+
+    <div class="actions">
+      <button [disabled]="busy() || o.status !== 'OPEN' || o.items.length === 0" (click)="setStatus('IN_PREPARATION')">
+        Do kuchni
+      </button>
+      <button [disabled]="busy() || o.status !== 'IN_PREPARATION'" (click)="setStatus('SERVED')">
+        Podane
+      </button>
+      <button class="pay" [disabled]="busy() || o.status !== 'SERVED'" (click)="setStatus('PAID')">
+        Zapłacone
+      </button>
+      @if (editable()) {
+        <button class="danger" [disabled]="busy()" (click)="setStatus('CANCELLED')">Anuluj</button>
+      }
+    </div>
+  } @else {
+    <p>Stolik jest wolny.</p>
+    <button [disabled]="busy()" (click)="openOrder()">Otwórz zamówienie</button>
+  }
+</div>

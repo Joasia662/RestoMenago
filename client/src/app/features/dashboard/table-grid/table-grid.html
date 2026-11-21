@@ -1,0 +1,22 @@
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+<div class="grid">
+  @for (table of tables(); track table.id) {
+    <app-table-tile
+      [table]="table"
+      [order]="activeOrders()[table.id] ?? null"
+      [selected]="table.id === selectedId()"
+      [canDelete]="auth.isAdmin()"
+      (picked)="selected.emit(table.id)"
+      (deleted)="remove(table)"
+    />
+  } @empty {
+    <p>Brak stolików.</p>
+  }
+
+  @if (auth.isAdmin()) {
+    <app-add-table-form (created)="changed.emit()" />
+  }
+</div>

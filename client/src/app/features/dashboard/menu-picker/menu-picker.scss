@@ -1,0 +1,13 @@
+.picker {
+  display: grid;
+  grid-template-columns: 1fr 70px;
+  gap: 8px;
+
+  input[name='note'] {
+    grid-column: 1 / -1;
+  }
+
+  button {
+    grid-column: 1 / -1;
+  }
+}

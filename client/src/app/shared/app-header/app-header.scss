@@ -1,0 +1,30 @@
+header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 24px;
+  background: #16343a;
+  color: #fff;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.logo {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+nav {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

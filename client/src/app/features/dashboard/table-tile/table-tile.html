@@ -1,0 +1,18 @@
+<button
+  type="button"
+  class="tile"
+  [class]="state()"
+  [class.selected]="selected()"
+  (click)="picked.emit()"
+>
+  <span class="number">{{ table().number }}</span>
+  <span class="seats">{{ table().seats }} miejsca</span>
+  <span class="status">{{ label() }}</span>
+  @if (order(); as o) {
+    <span class="total">{{ o.total.toFixed(2) }} zł</span>
+  }
+
+  @if (canDelete() && !order()) {
+    <span class="delete" title="Usuń stolik" (click)="delete($event)">✕</span>
+  }
+</button>

@@ -1,1 +1,47 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: #f3f5f6;
+  color: #1d2b33;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  background: #2f6f7a;
+  color: #fff;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background: #e3e8ea;
+  color: #1d2b33;
+}
+
+button.danger {
+  background: #c0392b;
+}
+
+input,
+select {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #c9d2d6;
+  border-radius: 6px;
+}
+
+.error {
+  color: #c0392b;
+  margin: 8px 0;
+}

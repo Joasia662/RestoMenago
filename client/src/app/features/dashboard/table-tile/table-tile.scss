@@ -1,0 +1,53 @@
+.tile {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: #fff;
+  color: #1d2b33;
+  border: 5px solid;
+  border-radius: 28px;
+  transition: transform 0.1s;
+
+  &:hover {
+    transform: scale(1.03);
+  }
+
+  &.selected {
+    box-shadow: 0 0 0 4px #16343a;
+  }
+
+  &.FREE { border-color: #27ae60; }
+  &.OPEN { border-color: #f39c12; }
+  &.IN_PREPARATION { border-color: #2e5bd8; }
+  &.SERVED { border-color: #e74c3c; }
+}
+
+.number {
+  font-size: 40px;
+  font-weight: 600;
+}
+
+.seats,
+.status,
+.total {
+  font-size: 13px;
+  color: #5b6b72;
+}
+
+.total {
+  font-weight: 600;
+  color: #1d2b33;
+}
+
+.delete {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  color: #c0392b;
+  font-size: 16px;
+}
