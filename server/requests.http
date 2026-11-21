@@ -1,0 +1,137 @@
+@base = http://localhost:3000/api
+
+### ===== LOGOWANIE (wyślij A1 i A2 jako pierwsze) =====
+
+### A1. Logowanie kelnera -> 200 + token
+# @name waiterLogin
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{"username": "anna", "password": "anna123"}
+
+### A2. Logowanie managera -> 200 + token
+# @name adminLogin
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{"username": "manager", "password": "manager123"}
+
+@waiterToken = {{waiterLogin.response.body.token}}
+@adminToken = {{adminLogin.response.body.token}}
+
+### A3. Złe hasło -> 401
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{"username": "anna", "password": "zle"}
+
+### A4. Kim jestem -> 200
+GET {{base}}/auth/me
+Authorization: Bearer {{waiterToken}}
+
+### A5. Bez tokenu -> 401
+GET {{base}}/tables
+
+### A6. Kelner dodaje stolik -> 403
+POST {{base}}/tables
+Authorization: Bearer {{waiterToken}}
+Content-Type: application/json
+
+{"number": 6, "seats": 4}
+
+### A7. Manager dodaje stolik -> 201
+POST {{base}}/tables
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{"number": 6, "seats": 4}
+
+### ===== STOLIKI I MENU =====
+
+### T1. Zły format ID -> 400
+GET {{base}}/tables/abc
+Authorization: Bearer {{waiterToken}}
+
+### T2. Trzy błędy walidacji naraz -> 400
+POST {{base}}/tables
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{"number": "x", "seats": 0, "id": 5}
+
+### T3. Stolik z zamówieniami -> 409 TABLE_HAS_ORDERS
+DELETE {{base}}/tables/3
+Authorization: Bearer {{adminToken}}
+
+### M1. Menu z filtrem i paginacją -> 200
+GET {{base}}/menu-items?category=MAIN&pageSize=2&page=1
+Authorization: Bearer {{waiterToken}}
+
+### M2. Wyszukiwanie -> 200
+GET {{base}}/menu-items?search=zupa
+Authorization: Bearer {{waiterToken}}
+
+### ===== ZAMÓWIENIA (po świeżym seedzie, po kolei) =====
+
+### O1. Lista zamówień -> 200
+GET {{base}}/orders
+Authorization: Bearer {{waiterToken}}
+
+### O2. Stolik 3 zajęty -> 409 TABLE_ALREADY_HAS_ACTIVE_ORDER
+POST {{base}}/orders
+Authorization: Bearer {{waiterToken}}
+Content-Type: application/json
+
+{"tableId": 3}
+
+### O3. Nowe zamówienie z pozycją -> 201 (kelner z tokenu)
+# @name newOrder
+POST {{base}}/orders
+Authorization: Bearer {{waiterToken}}
+Content-Type: application/json
+
+{"tableId": 2, "items": [{"menuItemId": 2, "quantity": 2, "note": "bez cebuli"}]}
+
+@orderId = {{newOrder.response.body.id}}
+
+### O4. Niedozwolone przejście OPEN -> PAID -> 409
+PATCH {{base}}/orders/{{orderId}}/status
+Authorization: Bearer {{waiterToken}}
+Content-Type: application/json
+
+{"status": "PAID"}
+
+### O5. Do kuchni -> 200
+PATCH {{base}}/orders/{{orderId}}/status
+Authorization: Bearer {{waiterToken}}
+Content-Type: application/json
+
+{"status": "IN_PREPARATION"}
+
+### O6. Podane -> 200
+PATCH {{base}}/orders/{{orderId}}/status
+Authorization: Bearer {{waiterToken}}
+Content-Type: application/json
+
+{"status": "SERVED"}
+
+### O7. Dodanie pozycji po podaniu -> 409 ORDER_NOT_EDITABLE
+POST {{base}}/orders/{{orderId}}/items
+Authorization: Bearer {{waiterToken}}
+Content-Type: application/json
+
+{"menuItemId": 1, "quantity": 1}
+
+### O8. Zapłacone -> 200, closedAt ustawione
+PATCH {{base}}/orders/{{orderId}}/status
+Authorization: Bearer {{waiterToken}}
+Content-Type: application/json
+
+{"status": "PAID"}
+
+### O9. Próba podszycia się pod innego kelnera -> 400
+POST {{base}}/orders
+Authorization: Bearer {{waiterToken}}
+Content-Type: application/json
+
+{"tableId": 5, "waiterId": 3}

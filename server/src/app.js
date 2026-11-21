@@ -1,4 +1,6 @@
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const openApiSpec = require("./docs/openapi");
 const requestLogger = require("./middleware/requestLogger");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
@@ -34,6 +36,10 @@ function createApp({ db, repositories, runInTransaction, config }) {
         await db.raw("SELECT 1");
         res.json({ status: "ok", database: "up" });
     });
+
+    // API documentation (Swagger UI) - public, like the login endpoint
+    app.get("/api/docs.json", (req, res) => res.json(openApiSpec));
+    app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
 
     const authenticate = createAuthenticate(config.jwtSecret);
 
