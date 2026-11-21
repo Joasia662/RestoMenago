@@ -38,7 +38,14 @@ class ConflictError extends AppError {
     }
 }
 
+class UnsupportedMediaTypeError extends AppError {
+    constructor(message) {
+        super(message, 415, "UNSUPPORTED_IMAGE");
+    }
+}
+
 module.exports = {
+    UnsupportedMediaTypeError,
     AppError,
     ValidationError,
     UnauthorizedError,

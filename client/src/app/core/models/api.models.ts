@@ -4,6 +4,15 @@ export type OrderStatus = 'OPEN' | 'IN_PREPARATION' | 'SERVED' | 'PAID' | 'CANCE
 
 export type MenuCategory = 'STARTER' | 'SOUP' | 'MAIN' | 'DESSERT' | 'DRINK';
 
+// API keeps the codes, the user sees these names
+export const CATEGORY_LABELS: Record<MenuCategory, string> = {
+  STARTER: 'Przystawka',
+  SOUP: 'Zupa',
+  MAIN: 'Danie główne',
+  DESSERT: 'Deser',
+  DRINK: 'Napój'
+};
+
 export interface User {
   id: number;
   username: string;
@@ -29,6 +38,7 @@ export interface MenuItem {
   price: number;
   isAvailable: boolean;
   createdAt: string;
+  imageUrl: string | null;
 }
 
 export interface OrderItem {

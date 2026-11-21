@@ -114,7 +114,8 @@ const spec = {
                     category: { type: "string", enum: ["STARTER", "SOUP", "MAIN", "DESSERT", "DRINK"] },
                     price: { type: "number" },
                     isAvailable: { type: "boolean" },
-                    createdAt: { type: "string", format: "date-time" }
+                    createdAt: { type: "string", format: "date-time" },
+                    imageUrl: { type: ["string", "null"], examples: ["/api/menu-items/1/image?v=1795256400000"] }
                 }
             },
             OrderSummary: {
@@ -336,6 +337,43 @@ const spec = {
                     404: E404,
                     409: error("MENU_ITEM_IN_USE")
                 }
+            }
+        },
+        "/api/menu-items/{id}/image": {
+            parameters: [idParam("id")],
+            get: {
+                tags: ["Menu items"],
+                summary: "Dish photo (public, used by <img> tags)",
+                security: [],
+                responses: {
+                    200: { description: "The image", content: { "image/png": {}, "image/jpeg": {}, "image/webp": {} } },
+                    404: E404
+                }
+            },
+            put: {
+                tags: ["Menu items"],
+                summary: "Upload or replace the dish photo (ADMIN). Body = the image file, max 2 MB",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "image/png": { schema: { type: "string", format: "binary" } },
+                        "image/jpeg": { schema: { type: "string", format: "binary" } },
+                        "image/webp": { schema: { type: "string", format: "binary" } }
+                    }
+                },
+                responses: {
+                    200: ok("Dish with the new imageUrl", "#/components/schemas/MenuItem"),
+                    401: E401,
+                    403: E403,
+                    404: E404,
+                    413: error("PAYLOAD_TOO_LARGE"),
+                    415: error("UNSUPPORTED_IMAGE")
+                }
+            },
+            delete: {
+                tags: ["Menu items"],
+                summary: "Remove the dish photo (ADMIN)",
+                responses: { 200: ok("Dish without a photo", "#/components/schemas/MenuItem"), 401: E401, 403: E403, 404: E404 }
             }
         },
         "/api/orders": {

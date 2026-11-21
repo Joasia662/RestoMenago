@@ -102,6 +102,39 @@ describe("REST API", () => {
         assert.ok(order.body.closedAt);
     });
 
+    test("dish photo: manager uploads, anyone can view, waiter gets 403", async () => {
+        const png = Buffer.from("89504e470d0a1a0a0000000d4948445200000001000000010806000000", "hex");
+        const adminToken = await login("manager", "manager123");
+        const waiterToken = await login("anna", "anna123");
+
+        const waiter = await request(app)
+            .put("/api/menu-items/1/image")
+            .set("Authorization", `Bearer ${waiterToken}`)
+            .set("Content-Type", "image/png")
+            .send(png);
+        assert.equal(waiter.status, 403);
+
+        const upload = await request(app)
+            .put("/api/menu-items/1/image")
+            .set("Authorization", `Bearer ${adminToken}`)
+            .set("Content-Type", "image/png")
+            .send(png);
+        assert.equal(upload.status, 200);
+        assert.match(upload.body.imageUrl, /^\/api\/menu-items\/1\/image\?v=\d+$/);
+
+        const image = await request(app).get("/api/menu-items/1/image"); // no token needed
+        assert.equal(image.status, 200);
+        assert.equal(image.headers["content-type"], "image/png");
+        assert.deepEqual(image.body, png);
+
+        const wrongType = await request(app)
+            .put("/api/menu-items/1/image")
+            .set("Authorization", `Bearer ${adminToken}`)
+            .set("Content-Type", "text/plain")
+            .send("hello");
+        assert.equal(wrongType.status, 415);
+    });
+
     test("API documentation is available", async () => {
         const res = await request(app).get("/api/docs.json");
         assert.equal(res.status, 200);

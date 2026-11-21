@@ -1,6 +1,15 @@
-const { NotFoundError, ConflictError } = require("../../errors/AppError");
+const { NotFoundError, ConflictError, UnsupportedMediaTypeError } = require("../../errors/AppError");
 
-function createMenuItemsService({ menuItemsRepository, ordersRepository }) {
+// allowed image types and the first bytes every such file starts with,
+// so a renamed .exe sent as "image/png" is rejected
+const IMAGE_SIGNATURES = {
+    "image/png": data => data.subarray(0, 4).toString("hex") === "89504e47",
+    "image/jpeg": data => data.subarray(0, 3).toString("hex") === "ffd8ff",
+    "image/webp": data =>
+        data.subarray(0, 4).toString("ascii") === "RIFF" && data.subarray(8, 12).toString("ascii") === "WEBP"
+};
+
+function createMenuItemsService({ menuItemsRepository, ordersRepository, now = () => new Date() }) {
     async function getMenuItem(id) {
         const item = await menuItemsRepository.findById(id);
         if (!item) throw new NotFoundError("Menu item");
@@ -44,6 +53,29 @@ function createMenuItemsService({ menuItemsRepository, ordersRepository }) {
             }
 
             await menuItemsRepository.remove(id);
+        },
+
+        async setMenuItemImage(id, { data, mimeType }) {
+            await getMenuItem(id);
+
+            const type = (mimeType || "").split(";")[0].trim().toLowerCase();
+            const matchesType = IMAGE_SIGNATURES[type];
+            if (!Buffer.isBuffer(data) || data.length === 0 || !matchesType || !matchesType(data)) {
+                throw new UnsupportedMediaTypeError("Send a PNG, JPEG or WEBP image");
+            }
+
+            return menuItemsRepository.setImage(id, { data, mime: type, updatedAt: now() });
+        },
+
+        async removeMenuItemImage(id) {
+            await getMenuItem(id);
+            return menuItemsRepository.setImage(id, { data: null, mime: null, updatedAt: null });
+        },
+
+        async getMenuItemImage(id) {
+            const image = await menuItemsRepository.findImage(id);
+            if (!image) throw new NotFoundError("Image");
+            return image;
         }
     };
 }

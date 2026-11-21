@@ -12,6 +12,16 @@ function errorHandler(err, req, res, next) {
         });
     }
 
+    if (err.type === "entity.too.large") {
+        return res.status(413).json({
+            error: {
+                code: "PAYLOAD_TOO_LARGE",
+                message: "File is too large (max 2 MB)",
+                requestId: req.id
+            }
+        });
+    }
+
     if (err.type === "entity.parse.failed") {
         return res.status(400).json({
             error: {

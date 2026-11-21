@@ -17,6 +17,7 @@ the menu.
 - [x] Tables: list, add, remove (a table with order history cannot be removed)
 - [x] Menu: list with pagination, filtering and search; add, edit, withdraw, delete dishes
 - [x] Orders: open an order for a table, add / edit / remove items with notes
+- [x] Dish photos: the manager uploads PNG / JPEG / WEBP (max 2 MB), stored in the database, file type checked by its content
 - [x] Order status flow: `OPEN → IN_PREPARATION → SERVED → PAID`, or `CANCELLED` before serving
 - [x] Business rules (409 Conflict when broken):
   - a table can have only one active order (also guarded by a partial unique index in the database)

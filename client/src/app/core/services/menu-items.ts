@@ -20,6 +20,17 @@ export class MenuItems {
     return this.http.patch<MenuItem>(`/api/menu-items/${id}`, { isAvailable });
   }
 
+  // the file itself is the request body, with its own type (image/png, image/jpeg...)
+  uploadImage(id: number, file: File) {
+    return this.http.put<MenuItem>(`/api/menu-items/${id}/image`, file, {
+      headers: { 'Content-Type': file.type }
+    });
+  }
+
+  removeImage(id: number) {
+    return this.http.delete<MenuItem>(`/api/menu-items/${id}/image`);
+  }
+
   remove(id: number) {
     return this.http.delete<void>(`/api/menu-items/${id}`);
   }

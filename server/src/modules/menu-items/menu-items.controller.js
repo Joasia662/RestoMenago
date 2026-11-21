@@ -33,6 +33,26 @@ function createMenuItemsController(menuItemsService) {
         async remove(req, res) {
             await menuItemsService.deleteMenuItem(req.validated.params.id);
             res.status(204).end();
+        },
+
+        async uploadImage(req, res) {
+            const item = await menuItemsService.setMenuItemImage(req.validated.params.id, {
+                data: req.body, // Buffer from express.raw()
+                mimeType: req.get("Content-Type")
+            });
+            res.json(toMenuItemResponse(item));
+        },
+
+        async removeImage(req, res) {
+            const item = await menuItemsService.removeMenuItemImage(req.validated.params.id);
+            res.json(toMenuItemResponse(item));
+        },
+
+        async getImage(req, res) {
+            const image = await menuItemsService.getMenuItemImage(req.validated.params.id);
+            res.set("Content-Type", image.mime);
+            res.set("Cache-Control", "public, max-age=86400");
+            res.send(image.data);
         }
     };
 }

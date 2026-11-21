@@ -5,6 +5,8 @@ const requestLogger = require("./middleware/requestLogger");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
 const { createAuthenticate } = require("./middleware/authenticate");
+const validate = require("./middleware/validate");
+const { idParams } = require("./common/schemas");
 
 // Auth module
 const { createAuthService } = require("./modules/auth/auth.service");
@@ -60,11 +62,10 @@ function createApp({ db, repositories, runInTransaction, config, events }) {
         menuItemsRepository: repositories.menuItems,
         ordersRepository: repositories.orders
     });
-    app.use(
-        "/api/menu-items",
-        authenticate,
-        createMenuItemsRouter(createMenuItemsController(menuItemsService))
-    );
+    const menuItemsController = createMenuItemsController(menuItemsService);
+    // dish photos are public: an <img> tag cannot send the Authorization header
+    app.get("/api/menu-items/:id/image", validate({ params: idParams }), menuItemsController.getImage);
+    app.use("/api/menu-items", authenticate, createMenuItemsRouter(menuItemsController));
 
     const ordersService = createOrdersService({ repositories, runInTransaction, events });
     app.use("/api/orders", authenticate, createOrdersRouter(createOrdersController(ordersService)));

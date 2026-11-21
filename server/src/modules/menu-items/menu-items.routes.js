@@ -1,4 +1,5 @@
-const { Router } = require("express");
+const express = require("express");
+const { Router } = express;
 const validate = require("../../middleware/validate");
 const requireRole = require("../../middleware/requireRole");
 const { idParams } = require("../../common/schemas");
@@ -21,6 +22,16 @@ function createMenuItemsRouter(controller) {
         controller.update
     );
     router.delete("/:id", requireRole("ADMIN"), validate({ params: idParams }), controller.remove);
+
+    // photo upload: the body is the raw image file (max 2 MB), not JSON
+    router.put(
+        "/:id/image",
+        requireRole("ADMIN"),
+        validate({ params: idParams }),
+        express.raw({ type: ["image/png", "image/jpeg", "image/webp"], limit: "2mb" }),
+        controller.uploadImage
+    );
+    router.delete("/:id/image", requireRole("ADMIN"), validate({ params: idParams }), controller.removeImage);
 
     return router;
 }
