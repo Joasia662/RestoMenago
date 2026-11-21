@@ -1,26 +1,28 @@
 const { createTablesRepository } = require("../modules/tables/tables.repository");
 const { createMenuItemsRepository } = require("../modules/menu-items/menu-items.repository");
 const { createOrdersRepository } = require("../modules/orders/orders.repository");
+const { createUsersRepository } = require("../modules/users/users.repository");
 
 // conn is either the knex instance (pool) or a transaction object
 function createRepositories(conn) {
-    return {
-        tables: createTablesRepository(conn),
-        menuItems: createMenuItemsRepository(conn),
-        orders: createOrdersRepository(conn)
-    };
+  return {
+    tables: createTablesRepository(conn),
+    menuItems: createMenuItemsRepository(conn),
+    orders: createOrdersRepository(conn),
+    users: createUsersRepository(conn)
+  };
 }
 
 function createUnitOfWork(db) {
-    return {
-        repositories: createRepositories(db),
+  return {
+    repositories: createRepositories(db),
 
-        // fn receives repositories bound to one transaction:
-        // everything inside is committed together or rolled back together
-        runInTransaction(fn) {
-            return db.transaction(trx => fn(createRepositories(trx)));
-        }
-    };
+    // fn receives repositories bound to one transaction:
+    // everything inside is committed together or rolled back together
+    runInTransaction(fn) {
+      return db.transaction(trx => fn(createRepositories(trx)));
+    }
+  };
 }
 
 module.exports = { createUnitOfWork };

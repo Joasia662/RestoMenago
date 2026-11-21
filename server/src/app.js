@@ -13,6 +13,11 @@ const { createMenuItemsService } = require("./modules/menu-items/menu-items.serv
 const { createMenuItemsController } = require("./modules/menu-items/menu-items.controller");
 const { createMenuItemsRouter } = require("./modules/menu-items/menu-items.routes");
 
+// Orders module
+const { createOrdersService } = require("./modules/orders/orders.service");
+const { createOrdersController } = require("./modules/orders/orders.controller");
+const { createOrdersRouter } = require("./modules/orders/orders.routes");
+
 function createApp({ db, repositories, runInTransaction }) {
     const app = express();
 
@@ -44,7 +49,8 @@ function createApp({ db, repositories, runInTransaction }) {
         createMenuItemsRouter(createMenuItemsController(menuItemsService))
     );
 
-
+    const ordersService = createOrdersService({ repositories, runInTransaction });
+    app.use("/api/orders", createOrdersRouter(createOrdersController(ordersService)));
 
     app.use(notFound);
     app.use(errorHandler);
